@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -66,6 +67,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				// CSRF
 				.csrf()
 				.disable()
+//				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//				.and()
 				// tratar login nao autorizado
 				.exceptionHandling()
 				.authenticationEntryPoint(this.unauthorizedHandler)
@@ -84,7 +87,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.antMatchers("/auth/**").permitAll()
-				.anyRequest().authenticated();
+				.anyRequest().authenticated()
+				// protecao contra XSS nos headers
+				.and()
+				.headers().xssProtection();
 
 		// Custom JWT based authentication
 		httpSecurity

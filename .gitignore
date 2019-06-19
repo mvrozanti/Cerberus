@@ -31,5 +31,5 @@ build/
 .vscode/
 
 ### Spring ###
-application.properties
+*.properties
 *.p12
