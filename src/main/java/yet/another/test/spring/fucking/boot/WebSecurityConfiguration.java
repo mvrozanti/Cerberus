@@ -63,14 +63,24 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity
+				// CSRF
 				.csrf()
 				.disable()
+				// tratar login nao autorizado
 				.exceptionHandling()
 				.authenticationEntryPoint(this.unauthorizedHandler)
 				.and()
+				// sessoes/usuario
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
+				// HTTPS
+				.requiresChannel().anyRequest().requiresSecure()
+				.and()
+				.portMapper()
+				.http(8080).mapsTo(8443)
+				.and()
+				// definicao restricao requisicao/caminho
 				.authorizeRequests()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.antMatchers("/auth/**").permitAll()

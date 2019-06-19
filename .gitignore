@@ -32,3 +32,4 @@ build/
 
 ### Spring ###
 application.properties
+*.p12
