@@ -1,8 +1,11 @@
 package yet.another.test.spring.fucking.boot;
 
+import java.time.Instant;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 //		User user = this.userRepository.findByUsername(username);
-		User user = jdbcTemplate.query("SELECT idc_usuario, psw_usuario FROM bd_4Config..tab_usuario where idc_usuario=?", new Object[]{username}, (rs, row) -> new User(rs.getString("idc_usuario"), rs.getString("psw_usuario"), "", new Date(), "admin")).get(0);
+		User user = jdbcTemplate.query("SELECT idc_usuario, psw_usuario FROM bd_4Config..tab_usuario where idc_usuario=?", new Object[]{username}, (rs, row) -> new User(rs.getString("idc_usuario"), rs.getString("psw_usuario"), "", Date.from(Instant.now().minus(10, DAYS)), new SimpleGrantedAuthority("ADMIN").toString())).get(0);
 
 		if (user == null) {
 			throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
